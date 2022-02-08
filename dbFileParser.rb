@@ -1,25 +1,43 @@
-module SQL_TXT_FileParser
+#
+# Functions to parse TXT files from phpMyAdmin
+#
+module SQL_TXT_FileParser 
 
+    #
+    # Given the path to a TXT files from phpMyAdmin re turn a Database object filled with data from the TXT
+    #
+    # @param [String] .Parsepath TXT files from phpMyAdmin
+    #
+    # @return [Database] Database object filled with data from the TXT
+    #
     def SQL_TXT_FileParser.Parse(path)
         file = File.open(path);
 
-        db = DataBase.new
+        db = Database.new
         currentTable = nil
+        lineSkipCounter = 0
 
         file.each_line do |line|
+            if lineSkipCounter > 0
+                lineSkipCounter -= 1
+                next
+            end
+
             if(line.start_with?("==="))
                 db.name = line.split.last
                 next
             end
+           
             if(line.start_with?("=="))
-                if(currentTable == line.split.last)
-                    next
-                end
+                if(currentTable == line.split.last) then next end
+                
                 currentTable = line.split.last
                 db.addTable(currentTable)
+                lineSkipCounter = 4
                 next
             end
-            unless line.chomp.empty? or line.start_with?("|--") or line.start_with?("|Colonne|")
+
+            unless line.chomp.empty?
                 db.addCol(currentTable, line.split("|")[1][/([A-z])\w+/], GetColType(line.split("|")[2]), line.start_with?("|//**"))
             end
         end
@@ -27,6 +45,13 @@ module SQL_TXT_FileParser
         return db
     end
     
+    #
+    # Return the correct type for PDO string sanatization
+    #
+    # @param [String] .GetColTypetypeString String containing the SQL column type
+    #
+    # @return [String] PDO sanatization type
+    #
     def SQL_TXT_FileParser.GetColType(typeString)
         if(typeString.include?("int"))
             return "PDO::PARAM_INT"
@@ -35,7 +60,10 @@ module SQL_TXT_FileParser
         return "PDO::PARAM_STR"
     end
 
-    class DataBase
+    #
+    # A class to store SQL Database stucture
+    #
+    class Database
 
         attr_accessor :name
 
@@ -66,10 +94,6 @@ module SQL_TXT_FileParser
             end
 
             return pCol
-        end
-
-        def to_s
-            p @tables
         end
     end
 end
