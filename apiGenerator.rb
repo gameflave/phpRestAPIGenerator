@@ -1,14 +1,14 @@
 module API_Generator
 
     def API_Generator.GenerateAPI(db)
-        Dir.mkdir(db.getName)
-        Dir.mkdir(db.getName + "/model")
-        Dir.mkdir(db.getName + "/api")
+        Dir.mkdir(db.name)
+        Dir.mkdir(db.name + "/model")
+        Dir.mkdir(db.name + "/api")
         
         db.getTables.keys.each do |key|
             unless key == nil
-                Dir.mkdir(db.getName + "/api/" + key)
-                GenerateTableClass(key, db, db.getName + "/model/")
+                Dir.mkdir(db.name + "/api/" + key)
+                GenerateTableClass(key, db, db.name + "/model/")
             end
         end
     end
