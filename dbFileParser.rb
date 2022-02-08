@@ -8,10 +8,13 @@ module SQL_TXT_FileParser
 
         file.each_line do |line|
             if(line.start_with?("==="))
-                db.setName = line.split.last
+                db.name = line.split.last
                 next
             end
             if(line.start_with?("=="))
+                if(currentTable == line.split.last)
+                    next
+                end
                 currentTable = line.split.last
                 db.addTable(currentTable)
                 next
@@ -34,35 +37,29 @@ module SQL_TXT_FileParser
 
     class DataBase
 
+        attr_accessor :name
+
         def initialize()
             @tables = Hash.new
         end
 
-        def setName=(value)
-            @name = value
+        def addTable(tableName)
+            @tables[tableName] = Hash.new
         end
-        def getName
-            return @name
-        end
-
-        def addTable(name)
-            @tables[name] = Hash.new
-        end
-        def addCol(table, name, type, isPrimary)
-            @tables[table][name] = {"type" => type, "primary" => isPrimary}
-        end
-        
         def getTables
             return @tables
         end
-
+        
+        def addCol(table, col, type, isPrimary)
+            @tables[table][col] = {"type" => type, "primary" => isPrimary}
+        end
         def getCols(table)
             return @tables[table]
         end
         def getPrimaryCols(table)
             pCol = Hash.new
 
-            @tables[table].keys.each do |col|
+            @tables[table].each_key do |col|
                 if @tables[table][col]["primary"]
                     pCol[col] = @tables[table][col]
                 end
