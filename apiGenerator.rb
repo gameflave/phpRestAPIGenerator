@@ -37,6 +37,7 @@ module API_Generator
         fileContent.concat(GenerateInsertFonction(table, db.getCols(table)))
         fileContent.concat(GenerateUpdateFonction(table, db.getCols(table)))
         fileContent.concat(GenerateDeleteFonction(table, db.getPrimaryCols(table)))
+        fileContent.concat("}")
         
         file = File.new(path + table + ".php", "w+")
         file.syswrite(fileContent)
