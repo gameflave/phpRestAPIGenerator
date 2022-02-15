@@ -33,7 +33,7 @@ module API_Generator
         fileContent = "<?php \nclass #{table.capitalize} { \n\tprivate $conn; \n\tpublic function __construct($db){ \n\t\t$this->conn = $db; \n\t}"
         fileContent.concat("\n\tconst #{table.upcase}_PER_Page = 100;")
         fileContent.concat(GenerateSelectFonction(table, db.getPrimaryCols(table)))
-        fileContent.concat(GenerateSelectAllFonction(name))
+        fileContent.concat(GenerateSelectAllFonction(table))
         fileContent.concat(GenerateInsertFonction(table, db.getCols(table)))
         fileContent.concat(GenerateUpdateFonction(table, db.getCols(table)))
         fileContent.concat(GenerateDeleteFonction(table, db.getPrimaryCols(table)))
