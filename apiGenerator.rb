@@ -36,7 +36,8 @@ module API_Generator
         fileContent.concat(GenerateSelectAllFonction(table))
         fileContent.concat(GenerateInsertFonction(table, db.getCols(table)))
         fileContent.concat(GenerateUpdateFonction(table, db.getCols(table)))
-        fileContent.concat(GenerateDeleteFonction(table, db.getPrimaryCols(table)))
+        fileContent.concat(GenerateDeleteFonction(table, db.getPrimaryCols(table)))7
+        fileContent.concat("}")
         
         file = File.new(path + table + ".php", "w+")
         file.syswrite(fileContent)
