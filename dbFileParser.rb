@@ -11,6 +11,7 @@ module SQL_TXT_FileParser
     # @return [Database] Database object filled with data from the TXT
     #
     def SQL_TXT_FileParser.Parse(path)
+        abort "file path required" unless path
         file = File.open(path);
 
         db = Database.new
